@@ -124,8 +124,8 @@ class Model{
   }
   onOperator(value){
     const arr = this.result.split('');
-    if(arr[arr.length-1] === '/' || arr[arr.length-1] === '+' || arr[arr.length-1] === '-' || arr[arr.length-1] === '*'){
-      console.log('đã vào đây rồi');
+    if(arr[arr.length-1] === '/' || arr[arr.length-1] === '+' || arr[arr.length-1] === '-' || arr[arr.length-1] === '*' || arr[arr.length-1] === '.'){
+      // console.log('đã vào đây rồi');
       arr.splice(-1,1);
       this.result = arr.join('');
     }
@@ -137,24 +137,30 @@ class Model{
     this._commit(this.result);
   }
   _reset(){
-    console.log('Reseting....')
     this.result = '0';
     this._commit(this.result);
   }
   calculatorAct(input='-2+25*2-1+10'){
     const inputArr = input.split('');
-    const reNumber = /-?\d+/g;
+    const reNumber = /-?\d+(\.\d+)?/g;
     let arrNumb = input.match(reNumber);
+    // console.log(arrNumb)
     if(inputArr[0] === '+' || inputArr[0] === '-' || inputArr[0] === '*' || inputArr[0] === '/'){
       inputArr.splice(0,1);
-      input = inputArr.join('')
+      input = inputArr.join('');
     }
     if(inputArr[inputArr.length] === '+' || inputArr[inputArr.length] === '-' || inputArr[inputArr.length] === '*' || inputArr[inputArr.length] === '/'){
       inputArr.splice(inputArr.length,1);
-      input = inputArr.join('')
+      input = inputArr.join('');
     }
     const reOperator = /\D+/g;
     let arrOperator = input.match(reOperator);
+
+    // loại bỏ dấu chấm trong mảng chứa dấu
+    const indexDot = arrOperator.findIndex((e)=>e==='.')
+    if(indexDot != -1)
+    arrOperator.splice(indexDot,1);
+    // ------------------------------------
     arrNumb = arrNumb.map(element => Number(element));
     arrOperator = arrOperator.map(element => {
       if(element === '-'){
@@ -163,7 +169,7 @@ class Model{
       return element;
     })
     //Thực hiện tính toán
-    //Nhân chia trước
+    //----------Nhân chia trước------------------------
     const finded = [];
     for (let i = 0; i < arrOperator.length; i++) {
       if (arrOperator[i].toString() === "*" || arrOperator[i].toString() === "/") {
@@ -191,27 +197,29 @@ class Model{
       }
     }
     // console.log(arrNumb)
-    //Cộng trừ
+    //----------Cộng trừ---------------------------
     const resultEnd = arrNumb.reduce((preVal, currVal) => {
       let newVal;
       // Thực hiện phép tính 2 số tương ứng với mỗi phép đã lưu trong mảng
       if (arrOperator.length > 0) {
         let optHead = arrOperator.shift();
         if (optHead.toString() === "+") {
+          // console.log(preVal,currVal)
           newVal = Number(preVal) + Number(currVal);
+          // console.log("Giá trị mới:",newVal)
         }
       }
-      console.log(preVal,currVal)
       return newVal;
     });
     if(!isFinite(resultEnd)){
-      this._reset()
+      console.log(resultEnd)
       alert('Ko chia được cho 0!');
+      return '0'
     }else{
       arrNumb = [resultEnd];
       return resultEnd.toString();
     }
-    console.log(arrNumb)
+    // console.log(arrNumb)
   }
   bindShowResult(callback){
     this.showResultChanged = callback;
@@ -235,11 +243,11 @@ class View{
     if(type === 'button')
     {
       if(name === 'Button')
-      return `<button class="btn ${classes}" value=${value} id="number-${value}">${value}</button>`
+        return `<button class="btn ${classes}" value=${value} id="number-${value}">${value}</button>`
       else if(name === 'Operator')
-      return `<button class="btn ${classes}" value=${value} id="operator-${value}">${value}</button>`
+        return `<button class="btn ${classes}" value=${value} id="operator-${value}">${value}</button>`
       else
-      return `<button class="btn ${classes}" value=${value} id="result-${value}">${value}</button>`
+        return `<button class="btn ${classes}" value=${value} id="result-${value}">${value}</button>`
     }
     else if(type === 'input')
       return `<input type="text" class="input ${classes}" id="input" ${disabled?`disabled`:''} />`
@@ -271,7 +279,7 @@ class View{
   }
   bindHandleAddNumber = (handler,arr) => {
     arr.forEach((element)=>{
-      if(document.getElementById("number-"+element.value)&&element.name != 'Input')
+      if(document.getElementById("number-"+element.value) && element.name != 'Input')
       document.getElementById("number-"+element.value).addEventListener('click',event =>
         handler(element.value)
       )
@@ -279,14 +287,16 @@ class View{
   }
   bindHandleAddOperator = (handler,arr)=>{
     arr.forEach((element)=>{
-      if(document.getElementById("operator-"+element.value)&&element.name != 'Input')
-      document.getElementById("operator-"+element.value).addEventListener('click',event =>
-        handler(element.value)
-      )
-    })
+      if(document.getElementById("operator-"+element.value) && element.name != 'Input')
+        document.getElementById("operator-"+element.value).addEventListener('click',event => handler(element.value))
+    }
+  )
   }
-  bindHandleEndResult = (handler)=>{
-    document.getElementById("result-=").addEventListener('click',event => handler())
+  bindHandleEndResult = (handler)=> {
+    document.getElementById("result-=").addEventListener('click',event => handler());
+  }
+  bindHandleResetResult = (handler)=> {
+    document.getElementById("result-C").addEventListener('click',event => handler());
   }
 }
 class Controller{
@@ -296,7 +306,8 @@ class Controller{
     this.model.bindShowResult(this.showResultChanged)
     this.view.bindHandleAddNumber(this.handleAddNumber,btnInfo);
     this.view.bindHandleAddOperator(this.handlerAddOperator,btnInfo);
-    this.view.bindHandleEndResult(this.handleEndResult)
+    this.view.bindHandleEndResult(this.handleEndResult);
+    this.view.bindHandleResetResult(this.handleResetResult);
     this.showResultChanged(this.model.result)
   }
   handleAddNumber = (value)=>{
@@ -308,12 +319,24 @@ class Controller{
   handleEndResult = (value)=>{
     this.model.onResult(value)
   }
+  handleResetResult = ()=>{
+    this.model._reset()
+  }
   showResultChanged = (value)=>{
     this.view.showResult(value);
   }
 }
 
 const calculatorApp = new Controller(new Model(),new View());
+
+
+
+
+
+
+
+
+
 
 
 // function calculatorAct(input='-2+25*2-1+10'){
