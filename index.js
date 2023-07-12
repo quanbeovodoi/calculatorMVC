@@ -124,11 +124,18 @@ class Model{
   }
   onOperator(value){
     const arr = this.result.split('');
+    const reNumber = /-?\d+(\.\d+)?/g;
+    let arrNumb = this.result.toString().match(reNumber);
+    console.log(Number(arrNumb[arrNumb.length-1]))
+    if(!Number.isInteger(Number(arrNumb[arrNumb.length-1])) && value === '.'){
+      return 0;
+    }
     if(arr[arr.length-1] === '/' || arr[arr.length-1] === '+' || arr[arr.length-1] === '-' || arr[arr.length-1] === '*' || arr[arr.length-1] === '.'){
       // console.log('đã vào đây rồi');
       arr.splice(-1,1);
       this.result = arr.join('');
     }
+    
     this.result += value;
     this._commit(this.result)
   }
@@ -157,7 +164,7 @@ class Model{
     let arrOperator = input.match(reOperator);
 
     // loại bỏ dấu chấm trong mảng chứa dấu
-    const indexDot = arrOperator.findIndex((e)=>e==='.')
+    const indexDot = arrOperator.findIndex((e)=>e === '.')
     if(indexDot != -1)
     arrOperator.splice(indexDot,1);
     // ------------------------------------
