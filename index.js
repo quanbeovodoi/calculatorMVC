@@ -140,8 +140,10 @@ class Model{
     this._commit(this.result)
   }
   onResult(){
-    this.result = this.calculatorAct(this.result)
-    this._commit(this.result);
+    if(this.result != '0'){
+      this.result = this.calculatorAct(this.result)
+      this._commit(this.result);
+    }
   }
   _reset(){
     this.result = '0';
@@ -164,9 +166,9 @@ class Model{
     let arrOperator = input.match(reOperator);
 
     // loại bỏ dấu chấm trong mảng chứa dấu
-    const indexDot = arrOperator.findIndex((e)=>e === '.')
+    {const indexDot = arrOperator.findIndex((e)=>e === '.')
     if(indexDot != -1)
-    arrOperator.splice(indexDot,1);
+    arrOperator.splice(indexDot,1);}
     // ------------------------------------
     arrNumb = arrNumb.map(element => Number(element));
     arrOperator = arrOperator.map(element => {
@@ -176,7 +178,7 @@ class Model{
       return element;
     })
     //Thực hiện tính toán
-    //----------Nhân chia trước------------------------
+    //-------------------------Nhân chia trước------------------------
     const finded = [];
     for (let i = 0; i < arrOperator.length; i++) {
       if (arrOperator[i].toString() === "*" || arrOperator[i].toString() === "/") {
@@ -204,7 +206,7 @@ class Model{
       }
     }
     // console.log(arrNumb)
-    //----------Cộng trừ---------------------------
+    //--------------------------Cộng trừ---------------------------
     const resultEnd = arrNumb.reduce((preVal, currVal) => {
       let newVal;
       // Thực hiện phép tính 2 số tương ứng với mỗi phép đã lưu trong mảng
