@@ -9,7 +9,6 @@ class Model {
   onButton(value) {
     if(this.isDone === true){
       this._reset();
-      this.isDone = false;
     }
     if (this.result === "0") {
       this.result = "";
@@ -18,6 +17,9 @@ class Model {
     this._commit(this.result);
   }
   onOperator(value) {
+    if(this.isDone === true){
+      this.isDone = false;
+    }
     const arr = this.result.split("");
     const reNumber = /-?\d+(\.\d+)?/g;
     let arrNumb = this.result.toString().match(reNumber);
@@ -48,6 +50,7 @@ class Model {
     }
   }
   _reset() {
+    this.isDone = false;
     this.result = "0";
     this._commit(this.result);
   }
