@@ -23,13 +23,16 @@
   box-shadow: 1px 2px 20px 5px rgba(104, 104, 104, 0.0823529412);
 }
 
+#root {
+  display: flex;
+}
+
 .calculator {
   margin: 0 auto;
   margin-top: 20px;
   width: 400px;
   box-shadow: 1px 2px 20px 5px rgba(34, 34, 34, 0.0823529412);
 }
-
 .calculator h1 {
   text-align: center;
   padding: 15px 0;

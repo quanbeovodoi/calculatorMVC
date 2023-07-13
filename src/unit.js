@@ -1,0 +1,112 @@
+const BTN_INFO = [
+    {
+      classes: "",
+      value: 0,
+      name: `Input`,
+      type: "input",
+      disabled: true,
+    },
+    {
+      classes: "clear-btn",
+      value: "C",
+      name: `Clear`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 1,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 2,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 3,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "increase-btn",
+      value: "+",
+      name: `Operator`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 4,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 5,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 6,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "decrease-btn",
+      value: "-",
+      name: `Operator`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 7,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 8,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 9,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "multiplication-btn",
+      value: "*",
+      name: `Operator`,
+      type: "button",
+    },
+    {
+      classes: "divide",
+      value: "/",
+      name: `Operator`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: 0,
+      name: `Button`,
+      type: "button",
+    },
+    {
+      classes: "",
+      value: ".",
+      name: `Operator`,
+      type: "button",
+    },
+    {
+      classes: "result",
+      value: "=",
+      name: `Result`,
+      type: "button",
+    },
+  ];
+  export default BTN_INFO;
